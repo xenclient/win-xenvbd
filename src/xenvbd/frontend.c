@@ -798,6 +798,17 @@ FrontendPrepare(
     // read features and caps (removable, ring-order, ...)
     Frontend->Caps.Removable        = (__ReadValue32(Frontend, "removable", 0, NULL) == 1);
     Frontend->Features.Indirect     =  __ReadValue32(Frontend, "feature-max-indirect-segments", 0, NULL);
+    // Start of patch
+    //
+    // XENCLIENT: Disable the Indirect feature until further notice. This casues
+    // invalid GREFs. XenServer group is working on fixing this as of May 16, 2014.
+    //
+    Verbose("------------------------------------------------------------------------------\n");
+    Verbose("Target[%d] : IGNORING feature-max-indirect-segments FEATURE (was set to %d)\n", 
+        Frontend->TargetId, Frontend->Features.Indirect);
+    Verbose("------------------------------------------------------------------------------\n");
+    Frontend->Features.Indirect = 0;
+    //End of patch
     Frontend->Features.Persistent   = (__ReadValue32(Frontend, "feature-persistent", 0, NULL) == 1);
 
     Verbose("Target[%d] : BackendId %d (%s)\n",
